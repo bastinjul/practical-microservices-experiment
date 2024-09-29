@@ -1,7 +1,7 @@
 import express, {Request, Response, NextFunction, Router} from "express";
 import Bluebird from "bluebird";
 import {Knex} from "knex";
-import {VideoHandlers, VideoPage, VideoQueries} from "../../video-commons";
+import {VideoHandlers, VideoPage, VideoQueries} from "../../commons";
 
 export interface HomeHandlers extends VideoHandlers {
     home: () => any;
@@ -11,7 +11,7 @@ export interface HomeQueries extends VideoQueries {
     loadHomePage: () => any;
 }
 
-function createHandlers({queries}: {queries?: any}): HomeHandlers {
+function createHandlers({queries}: {queries: HomeQueries}): HomeHandlers {
     function home(req: Request, res: Response, next: NextFunction): any {
         return queries
             .loadHomePage()
