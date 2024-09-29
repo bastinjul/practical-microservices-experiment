@@ -6,6 +6,7 @@ Step-by-step writing of the code in the [Practical Microservices](https://pragpr
 
 The code is divided into several parts, as described in the book:
 - [first-pass](first-pass) : corresponds to chapter 1 of the book and contains the original setup for running the application.
+- [video-tutorials](video-tutorials) : corresponds to chapters 2 to 11 of the book (part 1 and 2).
 
 ## Start the app
 
