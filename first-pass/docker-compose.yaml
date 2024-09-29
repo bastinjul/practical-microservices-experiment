@@ -1,0 +1,19 @@
+name: "pract-microserv-first-pass"
+
+services:
+  app:
+    image: "local/pract-microserv-experim/first-pass"
+    container_name: "pract-microserv-app"
+    build: .
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json

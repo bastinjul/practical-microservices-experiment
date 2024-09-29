@@ -1,0 +1,39 @@
+{
+  "name": "practical-microservices-first-pass",
+  "version": "1.0.0",
+  "description": "Practical Microservices Book first chapters",
+  "main": "index.ts",
+  "scripts": {
+    "build": "npx tsc",
+    "dev": "nodemon src/bin/start-server.ts --color",
+    "test": "NODE_ENV=test tape 'src/**/*.test.js'"
+  },
+  "private": true,
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.20.3",
+    "colors": "^1.4.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "knex": "^3.1.0",
+    "pg": "^8.13.0",
+    "pug": "^3.0.3",
+    "snakecase-keys": "^8.0.1",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.16.10",
+    "@types/uuid": "^10.0.0",
+    "blue-tape": "^1.0.0",
+    "keygrip": "^1.1.0",
+    "nodemon": "^3.1.7",
+    "supertest": "^7.0.0",
+    "tape": "^5.9.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  },
+  "engines": {
+    "node": "20"
+  }
+}
