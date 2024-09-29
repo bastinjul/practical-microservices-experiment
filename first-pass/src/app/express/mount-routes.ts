@@ -1,5 +1,6 @@
 import {Express} from "express";
+import {AppConfig} from "../../config";
 
-export default function mountRoutes(app: Express, env: any) {
-    //will be added later
+export default function mountRoutes(app: Express, config: AppConfig) {
+    app.use('/', config.homeApp.router);
 }

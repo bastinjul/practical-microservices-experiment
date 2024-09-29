@@ -3,7 +3,7 @@ name: "pract-microserv-first-pass"
 services:
   app:
     image: "local/pract-microserv-experim/first-pass"
-    container_name: "pract-microserv-app"
+    container_name: "pract-microserv-first-pass-app"
     build: .
     ports:
       - "3000:3000"
@@ -17,3 +17,20 @@ services:
             - node_modules/
         - action: rebuild
           path: package.json
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17
+    container_name: "pract-microserv-first-pass-db"
+    ports:
+      - "0.0.0.0:5432:5432"
+    environment:
+      POSTGRES_DB: practical_microservices
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

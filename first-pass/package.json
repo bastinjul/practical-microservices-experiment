@@ -22,7 +22,9 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.42",
     "@types/express": "^5.0.0",
+    "@types/knex": "^0.16.1",
     "@types/node": "^20.16.10",
     "@types/uuid": "^10.0.0",
     "blue-tape": "^1.0.0",

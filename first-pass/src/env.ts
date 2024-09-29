@@ -20,6 +20,7 @@ export interface AppEnv {
     env: string;
     port: number;
     version: string;
+    databaseUrl: string;
 }
 
 export const appEnv: AppEnv = {
@@ -27,4 +28,5 @@ export const appEnv: AppEnv = {
     env: requireFromEnv('NODE_ENV'),
     port: parseInt(requireFromEnv('PORT'), 10),
     version: requireFromEnv('VERSION'),
+    databaseUrl: requireFromEnv('DATABASE_URL'),
 }
