@@ -2,9 +2,11 @@ import {VideoActions, VideoHandlers, VideoPage} from "../types/common-types";
 import express, {Request, Response} from "express";
 import {VideoTutorialEvent, VideoTutorialEventMetadata} from "../types/event-types";
 import {v4 as uuid} from "uuid";
+import {MessageStore} from "../../message-store";
+import {QueryResult} from "pg";
 
 export interface RecordViewingsActions extends VideoActions {
-    recordViewing: (traceId: string, videoId: number, userId: string) => Promise<boolean>;
+    recordViewing: (traceId: string, videoId: number, userId: string) => Promise<QueryResult>;
 }
 
 export interface RecordViewingHandlers extends VideoHandlers {
@@ -15,8 +17,8 @@ export interface VideoViewedMetaData extends VideoTutorialEventMetadata {
     userId: string;
 }
 
-function createActions({messageStore}: {messageStore: any}): RecordViewingsActions { //TODO
-    function recordViewing(traceId: string, videoId: number, userId: string): Promise<boolean> {
+function createActions({messageStore}: {messageStore: MessageStore}): RecordViewingsActions {
+    function recordViewing(traceId: string, videoId: number, userId: string): Promise<QueryResult> {
         const viewedEvent: VideoTutorialEvent<VideoViewedMetaData> = {
             id: uuid(),
             type: 'VideoViewed',
@@ -40,7 +42,7 @@ function createActions({messageStore}: {messageStore: any}): RecordViewingsActio
 function createHandlers({actions}: {actions: RecordViewingsActions}): RecordViewingHandlers {
     function handleRecordViewing(req: Request, res: Response): any {
         return actions
-            .recordViewing(res.locals.context.traceId as string, parseInt(req.params['videoId']), "") //TODO
+            .recordViewing(res.locals.context.traceId as string, parseInt(req.params['videoId']), "") //TODO add user id
             .then(() => res.redirect('/'));
     }
     return {
@@ -48,7 +50,7 @@ function createHandlers({actions}: {actions: RecordViewingsActions}): RecordView
     } as RecordViewingHandlers;
 }
 
-export function createRecordViewings({messageStore}: {messageStore: any}): VideoPage { //TODO
+export function createRecordViewings({messageStore}: {messageStore: any}): VideoPage {
     const actions = createActions({messageStore});
     const handlers = createHandlers({actions});
     const router = express.Router();

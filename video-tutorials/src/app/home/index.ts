@@ -1,5 +1,4 @@
 import express, {Request, Response, NextFunction, Router} from "express";
-import Bluebird from "bluebird";
 import {Knex} from "knex";
 import {VideoHandlers, VideoPage, VideoQueries} from "../types/common-types";
 
@@ -15,7 +14,7 @@ function createHandlers({queries}: {queries: HomeQueries}): HomeHandlers {
     function home(req: Request, res: Response, next: NextFunction): any {
         return queries
             .loadHomePage()
-            .then((viewData: any) => res.render('home/templates/home', viewData))
+            .then(() => res.render('home/templates/home', {}))
             .catch(next)
     }
     return {
@@ -23,19 +22,16 @@ function createHandlers({queries}: {queries: HomeQueries}): HomeHandlers {
     } as HomeHandlers;
 }
 
-function createQueries({db}: {db: Bluebird<Knex>}): HomeQueries {
+function createQueries({db}: {db: Promise<Knex>}): HomeQueries {
     function loadHomePage(): any {
-        return db.then((client: Knex) =>
-            client('videos')
-                .sum('view_count as videosWatched')
-                .then(rows => rows[0]))
+        return Promise.resolve()
     }
     return {
         loadHomePage
     } as HomeQueries;
 }
 
-export function createHome({db}: {db: Bluebird<Knex>}): VideoPage {
+export function createHome({db}: {db: Promise<Knex>}): VideoPage {
     const queries: HomeQueries = createQueries({db});
     const handlers: HomeHandlers = createHandlers({queries});
     const router: Router  = express.Router();

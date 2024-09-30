@@ -1,7 +1,6 @@
-import Bluebird, {Promise} from "bluebird";
 import knex, {Knex} from "knex";
 
-export function createKnexClient({connectionString, migrationsTableName}: {connectionString: string, migrationsTableName?: string}): Bluebird<Knex> {
+export function createKnexClient({connectionString, migrationsTableName}: {connectionString: string, migrationsTableName?: string}): Promise<Knex> {
     const client = knex(connectionString);
     const migrationOptions = {
         tableName: migrationsTableName ?? 'knex_migrations',

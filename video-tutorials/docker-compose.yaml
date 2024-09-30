@@ -3,7 +3,7 @@ name: "pract-microserv-first-pass"
 services:
   app:
     image: "local/pract-microserv-experim/first-pass"
-    container_name: "pract-microserv-first-pass-app"
+    container_name: "pract-microserv-video-tuto-app"
     build: .
     ports:
       - "3000:3000"
@@ -19,6 +19,8 @@ services:
           path: package.json
     depends_on:
       db:
+        condition: service_healthy
+      message-db:
         condition: service_healthy
 
   db:
@@ -40,3 +42,8 @@ services:
     container_name: "pract-microserv-video-tuto-message-db"
     ports:
       - '5433:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
