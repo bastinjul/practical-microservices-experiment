@@ -3,9 +3,10 @@ import {createPostgresClient, PostgresClient} from "./postgres-client";
 import {createHome} from "../app/home"
 import {AppEnv} from "./env";
 import {Knex} from "knex";
-import {VideoPage} from "../app/types/common-types";
+import {Aggregator, Component, VideoPage} from "../types/common-types";
 import {createRecordViewings} from "../app/record-viewings";
 import {createMessageStore, MessageStore} from "../message-store";
+import {build as createHomePageAggregator} from "../aggregators/home-page"
 
 export interface AppConfig {
     env: AppEnv;
@@ -13,12 +14,17 @@ export interface AppConfig {
     homeApp: VideoPage;
     recordViewingApp: VideoPage;
     messageStore: MessageStore;
+    aggregators: Aggregator[];
+    components: Component[];
 }
 
 export default function createConfig({ env }: {env: AppEnv}): AppConfig {
     const knexClient: Promise<Knex> = createKnexClient({connectionString: env.databaseUrl});
     const postgresClient: PostgresClient = createPostgresClient({connectionString: env.messageStoreUrl});
     const messageStore: MessageStore = createMessageStore({db: postgresClient});
+    const homePageAggregator = createHomePageAggregator({db: knexClient, messageStore});
+    const aggregators: Aggregator[] = [homePageAggregator];
+    const components: Component[] = []
     const homeApp: VideoPage = createHome({db: knexClient});
     const recordViewingApp = createRecordViewings({messageStore});
     return {
@@ -26,6 +32,8 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
         db: knexClient,
         homeApp,
         recordViewingApp,
-        messageStore
+        messageStore,
+        aggregators,
+        components
     }
 }

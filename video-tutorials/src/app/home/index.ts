@@ -1,6 +1,6 @@
 import express, {Request, Response, NextFunction, Router} from "express";
 import {Knex} from "knex";
-import {VideoHandlers, VideoPage, VideoQueries} from "../types/common-types";
+import {VideoHandlers, VideoPage, VideoQueries} from "../../types/common-types";
 
 export interface HomeHandlers extends VideoHandlers {
     home: () => any;
@@ -24,7 +24,12 @@ function createHandlers({queries}: {queries: HomeQueries}): HomeHandlers {
 
 function createQueries({db}: {db: Promise<Knex>}): HomeQueries {
     function loadHomePage(): any {
-        return Promise.resolve()
+        return db.then(client =>
+            client('pages')
+                .where({page_name: 'home'})
+                .limit(1)
+                .then(rows => rows[0])
+        )
     }
     return {
         loadHomePage

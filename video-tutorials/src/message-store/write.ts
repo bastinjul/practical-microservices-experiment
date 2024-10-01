@@ -1,6 +1,6 @@
 import {PostgresClient} from "../config/postgres-client";
 import {QueryResult} from "pg";
-import {VideoTutorialEvent, VideoTutorialEventMetadata} from "../app/types/event-types";
+import {VideoTutorialEvent, VideoTutorialEventMetadata} from "../types/event-types";
 import {VersionConflictError} from "./version-conflict-error";
 
 const versionConflictErrorRegex = /^Wrong.*Stream Version: (\d+)\)/

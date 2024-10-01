@@ -1,6 +1,6 @@
-import {VideoActions, VideoHandlers, VideoPage} from "../types/common-types";
+import {VideoActions, VideoHandlers, VideoPage} from "../../types/common-types";
 import express, {Request, Response} from "express";
-import {VideoTutorialEvent, VideoTutorialEventMetadata} from "../types/event-types";
+import {VideoTutorialEvent, VideoTutorialEventMetadata} from "../../types/event-types";
 import {v4 as uuid} from "uuid";
 import {MessageStore} from "../../message-store";
 import {QueryResult} from "pg";
