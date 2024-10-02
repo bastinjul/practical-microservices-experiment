@@ -74,7 +74,8 @@ export function build({db, messageStore}: {db: Promise<Knex>, messageStore: Mess
     const subscription: Subscription = messageStore.createSubscription({
         streamName: 'viewing',
         handlers,
-        subscriberId: 'aggregators::home-page'
+        subscriberId: 'aggregators::home-page',
+        positionUpdateInterval: 5
     } as CreateSubscriptionConfig);
     function init(): Promise<any> {
         return queries.ensureHomePage();
