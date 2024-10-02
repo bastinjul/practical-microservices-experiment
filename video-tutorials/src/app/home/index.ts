@@ -1,20 +1,22 @@
 import express, {Request, Response, NextFunction, Router} from "express";
 import {Knex} from "knex";
 import {VideoHandlers, VideoPage, VideoQueries} from "../../types/common-types";
+import camelCaseKeys from "../../camelcase/camelcase-keys"
+import {Page, PageData} from "../../aggregators/home-page";
 
 export interface HomeHandlers extends VideoHandlers {
-    home: () => any;
+    home: (req: Request, res: Response, next: NextFunction) => Promise<any>;
 }
 
 export interface HomeQueries extends VideoQueries {
-    loadHomePage: () => any;
+    loadHomePage: () => Promise<PageData>;
 }
 
 function createHandlers({queries}: {queries: HomeQueries}): HomeHandlers {
-    function home(req: Request, res: Response, next: NextFunction): any {
+    function home(req: Request, res: Response, next: NextFunction): Promise<any> {
         return queries
             .loadHomePage()
-            .then(() => res.render('home/templates/home', {}))
+            .then((pageData: PageData) => res.render('home/templates/home', pageData))
             .catch(next)
     }
     return {
@@ -23,13 +25,18 @@ function createHandlers({queries}: {queries: HomeQueries}): HomeHandlers {
 }
 
 function createQueries({db}: {db: Promise<Knex>}): HomeQueries {
-    function loadHomePage(): any {
+    function loadHomePage(): Promise<PageData> {
         return db.then(client =>
             client('pages')
                 .where({page_name: 'home'})
                 .limit(1)
-                .then(rows => rows[0])
-        )
+                .then(camelCaseKeys)
+                .then((rows: Page[]) => rows[0])
+                .then((page: Page) => page.pageData)
+        ).then(res => {
+            console.log(res);
+            return res;
+        });
     }
     return {
         loadHomePage

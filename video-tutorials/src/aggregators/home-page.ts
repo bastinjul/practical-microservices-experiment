@@ -17,6 +17,16 @@ export interface HomePageAggregatorQueries extends VideoQueries {
     ensureHomePage: () => Promise<any>;
 }
 
+export interface Page {
+    pageName: string;
+    pageData: PageData;
+}
+
+export interface PageData {
+    videosWatched: number;
+    lastViewProcessed: number;
+}
+
 function createHandlers ({queries}: {queries: HomePageAggregatorQueries}): AggregatorHandler {
     return {
         VideoViewed: (evt: Message) => queries.incrementVideosWatched(evt.globalPosition)
@@ -24,7 +34,8 @@ function createHandlers ({queries}: {queries: HomePageAggregatorQueries}): Aggre
 }
 
 function createQueries({db}: {db: Promise<Knex>}): HomePageAggregatorQueries {
-    async function incrementVideosWatched (globalPosition: number): Promise<any> {
+    function incrementVideosWatched (globalPosition: number): Promise<any> {
+        console.log(`increment video watched, position ${globalPosition}`)
         const queryString = `
             UPDATE
                 pages
@@ -44,9 +55,9 @@ function createQueries({db}: {db: Promise<Knex>}): HomePageAggregatorQueries {
             `
         return db.then(client => client.raw(queryString, {globalPosition}));
     }
-    async function ensureHomePage (): Promise<any> {
+    function ensureHomePage (): Promise<any> {
         const initialData = {
-            pageData: { lastViewProcessed: 0, videoWatched: 0}
+            pageData: { lastViewProcessed: 0, videosWatched: 0}
         }
         const queryString = `INSERT INTO pages(page_name, page_data) VALUES ('home', :pageData) ON CONFLICT DO NOTHING`
         return db.then(client => client.raw(queryString, initialData));
