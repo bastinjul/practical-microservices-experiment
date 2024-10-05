@@ -1,32 +1,8 @@
 import {v4 as uuid} from 'uuid';
 import Bluebird from 'bluebird';
-import {WriteFunction} from "./write";
 import {Message, SubscriptionMessage} from "../types/event-types";
 import {QueryResult} from "pg";
-import {AggregatorHandler} from "../types/aggregator-types";
-
-export interface CreateSubscription {
-    read: (streamName: string, currentPosition: number, messagesPerTick: number) => Promise<Message[]>;
-    readLastMessage: (subscriberStreamName: string) => Promise<Message>;
-    write: WriteFunction;
-}
-
-export interface CreateSubscriptionConfig {
-    streamName: string;
-    handlers: AggregatorHandler;
-    messagesPerTick: number;
-    subscriberId: string;
-    positionUpdateInterval: number;
-    tickIntervalMs: number;
-}
-
-export interface Subscription {
-    loadPosition: () => Promise<void>;
-    start: () => Promise<void>;
-    stop: () => void;
-    tick: () => Promise<number | void>;
-    writePosition: (position: number) => Promise<QueryResult>;
-}
+import {CreateSubscription, CreateSubscriptionConfig, Subscription} from "./message-store-types";
 
 export function configureCreateSubscription({read, readLastMessage, write}: CreateSubscription): (subscriptionConfig: CreateSubscriptionConfig) => Subscription {
     return ({streamName, handlers, messagesPerTick = 100, subscriberId, positionUpdateInterval = 100, tickIntervalMs = 100}: CreateSubscriptionConfig): Subscription => {

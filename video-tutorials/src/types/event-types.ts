@@ -9,6 +9,10 @@ export interface VideoTutorialEventMetadata {
     traceId: string;
 }
 
+export interface UserIdEventMetadata extends VideoTutorialEventMetadata {
+    userId: string;
+}
+
 export interface Message {
     globalPosition: number;
     position: number;

@@ -1,10 +1,6 @@
 import {UserRegistrationChainContext} from "./index";
 import {v4 as uuid} from "uuid";
-import {VideoTutorialEvent, VideoTutorialEventMetadata} from "../../types/event-types";
-
-export interface UserIdEventMetadata extends VideoTutorialEventMetadata {
-    userId: string;
-}
+import {UserIdEventMetadata, VideoTutorialEvent} from "../../types/event-types";
 
 export function writeRegisterCommand(context: UserRegistrationChainContext): Promise<any> {
     const userId = context.attributes.id;

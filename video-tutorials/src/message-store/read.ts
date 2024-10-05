@@ -1,22 +1,22 @@
 import {PostgresClient} from "../config/postgres-client";
 import {deserializeMessage} from "./deserialize-message";
 import {Message} from "../types/event-types";
+import {CreateRead, Projection} from "./message-store-types";
 
 const getLastMessageSql = 'SELECT * from get_last_stream_message($1)'
 
-export interface CreateRead {
-    readLastMessage: (stramName: string) => Promise<Message>;
-    read: (streamName: string, fromPosition: number, maxMessages: number) => Promise<Message[]>;
-}
-
-export interface ReadConfig {
-    streamName: string;
-    fromPosition: number;
-    maxMessages: number;
-}
-
 const getCategoryMessagesSql = 'SELECT * FROM get_category_messages($1, $2, $3)'
 const getStreamMessagesSql = 'SELECT * FROM get_stream_messages($1, $2, $3)'
+
+
+function project(events: Message[], projection: Projection<any>) {
+    return events.reduce((entity: any, event: Message) => {
+        if(!projection[event.type]) {
+            return entity;
+        }
+        return projection[event.type](entity, event);
+    }, projection.$init())
+}
 
 export function createRead({db}: {db: PostgresClient}): CreateRead {
     function readLastMessage(streamName: string): Promise<Message> {
@@ -38,8 +38,13 @@ export function createRead({db}: {db: PostgresClient}): CreateRead {
             .then(res => res.rows.map(deserializeMessage));
     }
 
+    function fetch(streamName: string, projection: Projection<any>): Promise<any> {
+        return read(streamName).then((messages: Message[]) => project(messages, projection));
+    }
+
     return {
         readLastMessage,
-        read
+        read,
+        fetch
     }
 }

@@ -1,9 +1,8 @@
-import {MessageStore} from "../message-store";
 import {Knex} from "knex";
 import {Aggregator, VideoQueries} from "../types/common-types";
 import {Message} from "../types/event-types";
 import {AggregatorHandler} from "../types/aggregator-types";
-import {CreateSubscriptionConfig, Subscription} from "../message-store/subscribe";
+import {MessageStore, CreateSubscriptionConfig, Subscription} from "../message-store/message-store-types";
 
 export interface HomePageAggregator extends Aggregator{
     queries: HomePageAggregatorQueries;

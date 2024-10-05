@@ -9,7 +9,7 @@ import camelCaseKeys from "../../camelcase/camelcase-keys"
 import {UserCredentials} from "../../types/aggregator-types";
 import {ensureThereWasNoExistingIdentity} from "./ensure-there-was-no-existing-identity";
 import {hashPassword} from "./hash-password";
-import {MessageStore} from "../../message-store";
+import {MessageStore} from "../../message-store/message-store-types";
 import {writeRegisterCommand} from "./write-register-command";
 import bodyParser from "body-parser";
 
