@@ -7,6 +7,7 @@ import {Aggregator, Component, VideoPage} from "../types/common-types";
 import {createRecordViewings} from "../app/record-viewings";
 import {createMessageStore, MessageStore} from "../message-store";
 import {build as createHomePageAggregator} from "../aggregators/home-page"
+import {createUserRegistration, RegisterUserApp} from "../app/register-users";
 
 export interface AppConfig {
     env: AppEnv;
@@ -16,6 +17,7 @@ export interface AppConfig {
     messageStore: MessageStore;
     aggregators: Aggregator[];
     components: Component[];
+    registerUsersApp: RegisterUserApp;
 }
 
 export default function createConfig({ env }: {env: AppEnv}): AppConfig {
@@ -27,6 +29,7 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
     const components: Component[] = []
     const homeApp: VideoPage = createHome({db: knexClient});
     const recordViewingApp = createRecordViewings({messageStore});
+    const registerUsersApp = createUserRegistration({db: knexClient, messageStore});
     return {
         env,
         db: knexClient,
@@ -34,6 +37,7 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
         recordViewingApp,
         messageStore,
         aggregators,
-        components
+        components,
+        registerUsersApp
     }
 }

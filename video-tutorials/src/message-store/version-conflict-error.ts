@@ -3,7 +3,6 @@ export class VersionConflictError extends Error {
         const message = `VersionConflict: stream ${stream} expected version ${expected} but was at version ${actual}`;
         super(message);
 
-        // Capture la trace de la pile en excluant ce constructeur
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, this.constructor);
         }
