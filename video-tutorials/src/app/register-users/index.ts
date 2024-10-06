@@ -1,4 +1,4 @@
-import {VideoActions, VideoHandlers, VideoQueries} from "../../types/common-types";
+import {AppActions, AppHandlers, AppQueries} from "../../types/common-types";
 import express, {NextFunction, Request, Response, Router} from "express";
 import {v4 as uuid} from "uuid";
 import {ValidationError} from "../errors/ValidationError";
@@ -20,17 +20,17 @@ export interface RegisterUserApp {
     router: Router;
 }
 
-export interface RegisterUsersActions extends VideoActions {
+export interface RegisterUsersActions extends AppActions {
     registerUser: (traceId: string, attributes: UserRegistrationAttributes) => Promise<void>;
 }
 
-export interface RegisterUsersHandlers extends VideoHandlers {
+export interface RegisterUsersHandlers extends AppHandlers {
     handleRegistrationForm: (req: Request, res: Response) => void;
     handleRegistrationComplete: (req: Request, res: Response) => void;
     handleRegisterUser: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 }
 
-export interface RegisterUsersQueries extends VideoQueries {
+export interface RegisterUsersQueries extends AppQueries {
     byEmail: (email: string) => Promise<UserCredentials>;
 }
 

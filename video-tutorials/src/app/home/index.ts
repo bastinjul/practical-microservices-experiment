@@ -1,14 +1,14 @@
 import express, {Request, Response, NextFunction, Router} from "express";
 import {Knex} from "knex";
-import {VideoHandlers, VideoPage, VideoQueries} from "../../types/common-types";
+import {AppHandlers, App, AppQueries} from "../../types/common-types";
 import camelCaseKeys from "../../camelcase/camelcase-keys"
 import {Page, PageData} from "../../aggregators/home-page";
 
-export interface HomeHandlers extends VideoHandlers {
+export interface HomeHandlers extends AppHandlers {
     home: (req: Request, res: Response, next: NextFunction) => Promise<any>;
 }
 
-export interface HomeQueries extends VideoQueries {
+export interface HomeQueries extends AppQueries {
     loadHomePage: () => Promise<PageData>;
 }
 
@@ -43,7 +43,7 @@ function createQueries({db}: {db: Promise<Knex>}): HomeQueries {
     } as HomeQueries;
 }
 
-export function createHome({db}: {db: Promise<Knex>}): VideoPage {
+export function createHome({db}: {db: Promise<Knex>}): App {
     const queries: HomeQueries = createQueries({db});
     const handlers: HomeHandlers = createHandlers({queries});
     const router: Router  = express.Router();

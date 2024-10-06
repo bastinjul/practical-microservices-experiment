@@ -3,25 +3,30 @@ import {createPostgresClient, PostgresClient} from "./postgres-client";
 import {createHome} from "../app/home"
 import {AppEnv} from "./env";
 import {Knex} from "knex";
-import {Aggregator, Component, VideoPage} from "../types/common-types";
-import {createRecordViewings} from "../app/record-viewings";
+import {Aggregator, Component, App} from "../types/common-types";
+import {createRecordViewingsApp} from "../app/record-viewings";
 import {createMessageStore} from "../message-store";
 import {build as createHomePageAggregator} from "../aggregators/home-page"
 import {createUserRegistration, RegisterUserApp} from "../app/register-users";
 import {MessageStore} from "../message-store/message-store-types";
 import {createIdentityComponent} from "../components/identity";
 import {IdentityComponent} from "../components/identity/identity-types";
+import {createUserCredentialsAggregator, UserCredentialsAggregator} from "../aggregators/user-credentials";
+import {createAuthenticateApp} from "../app/authenticate";
+import {AuthenticateApp} from "../app/authenticate/authenticate-types";
 
 export interface AppConfig {
     env: AppEnv;
     db: Promise<Knex>;
-    homeApp: VideoPage;
-    recordViewingApp: VideoPage;
+    homeApp: App;
+    recordViewingApp: App;
     messageStore: MessageStore;
     aggregators: Aggregator[];
     components: Component[];
     registerUsersApp: RegisterUserApp;
     identityComponent: IdentityComponent;
+    userCredentialsAggregator: UserCredentialsAggregator;
+    authenticateApp: AuthenticateApp;
 }
 
 export default function createConfig({ env }: {env: AppEnv}): AppConfig {
@@ -29,12 +34,14 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
     const postgresClient: PostgresClient = createPostgresClient({connectionString: env.messageStoreUrl});
     const messageStore: MessageStore = createMessageStore({db: postgresClient});
     const homePageAggregator = createHomePageAggregator({db: knexClient, messageStore});
-    const aggregators: Aggregator[] = [homePageAggregator];
+    const userCredentialsAggregator =  createUserCredentialsAggregator({db: knexClient, messageStore});
+    const aggregators: Aggregator[] = [homePageAggregator, userCredentialsAggregator];
     const identityComponent = createIdentityComponent({messageStore});
     const components: Component[] = [identityComponent];
-    const homeApp: VideoPage = createHome({db: knexClient});
-    const recordViewingApp = createRecordViewings({messageStore});
+    const homeApp: App = createHome({db: knexClient});
+    const recordViewingApp = createRecordViewingsApp({messageStore});
     const registerUsersApp = createUserRegistration({db: knexClient, messageStore});
+    const authenticateApp = createAuthenticateApp({db: knexClient, messageStore});
     return {
         env,
         db: knexClient,
@@ -45,5 +52,7 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
         components,
         registerUsersApp,
         identityComponent,
+        userCredentialsAggregator,
+        authenticateApp,
     }
 }

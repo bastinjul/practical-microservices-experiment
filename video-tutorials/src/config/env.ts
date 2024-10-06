@@ -22,6 +22,7 @@ export interface AppEnv {
     version: string;
     databaseUrl: string;
     messageStoreUrl: string;
+    cookieSecret: string;
 }
 
 export const appEnv: AppEnv = {
@@ -31,4 +32,5 @@ export const appEnv: AppEnv = {
     version: requireFromEnv('VERSION'),
     databaseUrl: requireFromEnv('DATABASE_URL'),
     messageStoreUrl: requireFromEnv('MESSAGE_STORE_URL'),
+    cookieSecret: requireFromEnv('COOKIE_SECRET'),
 }

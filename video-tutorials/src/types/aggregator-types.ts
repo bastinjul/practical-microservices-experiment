@@ -1,7 +1,7 @@
-import {VideoHandlers} from "./common-types";
+import {AppHandlers} from "./common-types";
 import {Message} from "./event-types";
 
-export interface AggregatorHandler extends VideoHandlers {
+export interface AggregatorHandler extends AppHandlers {
     [key: string]: (message: Message) => Promise<any>;
 }
 

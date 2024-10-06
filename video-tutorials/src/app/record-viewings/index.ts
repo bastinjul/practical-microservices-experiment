@@ -1,15 +1,15 @@
-import {VideoActions, VideoHandlers, VideoPage} from "../../types/common-types";
+import {AppActions, AppHandlers, App} from "../../types/common-types";
 import express, {Request, Response} from "express";
 import {VideoTutorialEvent, VideoTutorialEventMetadata} from "../../types/event-types";
 import {v4 as uuid} from "uuid";
 import {MessageStore} from "../../message-store/message-store-types";
 import {QueryResult} from "pg";
 
-export interface RecordViewingsActions extends VideoActions {
+export interface RecordViewingsActions extends AppActions {
     recordViewing: (traceId: string, videoId: number, userId: string) => Promise<QueryResult>;
 }
 
-export interface RecordViewingHandlers extends VideoHandlers {
+export interface RecordViewingHandlers extends AppHandlers {
     handleRecordViewing: () => any;
 }
 
@@ -50,7 +50,7 @@ function createHandlers({actions}: {actions: RecordViewingsActions}): RecordView
     } as RecordViewingHandlers;
 }
 
-export function createRecordViewings({messageStore}: {messageStore: any}): VideoPage {
+export function createRecordViewingsApp({messageStore}: {messageStore: any}): App {
     const actions = createActions({messageStore});
     const handlers = createHandlers({actions});
     const router = express.Router();

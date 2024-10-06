@@ -1,17 +1,15 @@
 import {Knex} from "knex";
-import {Aggregator, VideoQueries} from "../types/common-types";
+import {Aggregator, AppQueries} from "../types/common-types";
 import {Message} from "../types/event-types";
 import {AggregatorHandler} from "../types/aggregator-types";
 import {MessageStore, CreateSubscriptionConfig, Subscription} from "../message-store/message-store-types";
 
-export interface HomePageAggregator extends Aggregator{
+export interface HomePageAggregator extends Aggregator {
     queries: HomePageAggregatorQueries;
     handlers: AggregatorHandler;
-    init: () => Promise<any>;
-    start: () => void;
 }
 
-export interface HomePageAggregatorQueries extends VideoQueries {
+export interface HomePageAggregatorQueries extends AppQueries {
     incrementVideosWatched: (globalPosition: number) => Promise<any>;
     ensureHomePage: () => Promise<any>;
 }

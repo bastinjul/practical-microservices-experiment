@@ -1,19 +1,19 @@
 import {Router} from "express";
 
-export interface VideoHandlers {
+export interface AppHandlers {
 }
 
-export interface VideoQueries {
+export interface AppQueries {
 }
 
-export interface VideoActions {
+export interface AppActions {
 }
 
-export interface VideoPage {
-    handlers: VideoHandlers;
-    queries?: VideoQueries;
+export interface App {
+    handlers: AppHandlers;
+    queries?: AppQueries;
     router: Router;
-    actions?: VideoActions;
+    actions?: AppActions;
 }
 
 export interface StartupI {
@@ -21,9 +21,9 @@ export interface StartupI {
 }
 
 export interface Aggregator extends StartupI {
-    queries: VideoQueries;
-    handlers: VideoHandlers;
-    init: () => Promise<any>;
+    queries: AppQueries;
+    handlers: AppHandlers;
+    init?: () => Promise<any>;
 }
 
 export interface Component extends StartupI {
