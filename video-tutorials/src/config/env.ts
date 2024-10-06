@@ -23,6 +23,8 @@ export interface AppEnv {
     databaseUrl: string;
     messageStoreUrl: string;
     cookieSecret: string;
+    systemSenderEmailAddress: string;
+    emailDirectory: string;
 }
 
 export const appEnv: AppEnv = {
@@ -33,4 +35,6 @@ export const appEnv: AppEnv = {
     databaseUrl: requireFromEnv('DATABASE_URL'),
     messageStoreUrl: requireFromEnv('MESSAGE_STORE_URL'),
     cookieSecret: requireFromEnv('COOKIE_SECRET'),
+    emailDirectory: requireFromEnv('EMAIL_DIRECTORY'),
+    systemSenderEmailAddress: requireFromEnv('SYSTEM_SENDER_EMAIL_ADDRESS')
 }

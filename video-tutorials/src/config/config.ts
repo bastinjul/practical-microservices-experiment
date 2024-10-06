@@ -14,6 +14,10 @@ import {IdentityComponent} from "../components/identity/identity-types";
 import {createUserCredentialsAggregator, UserCredentialsAggregator} from "../aggregators/user-credentials";
 import {createAuthenticateApp} from "../app/authenticate";
 import {AuthenticateApp} from "../app/authenticate/authenticate-types";
+import {createSendEmailComponent} from "../components/send-email";
+import createPickupTransport from "nodemailer-pickup-transport";
+import {SendEmailComponent} from "../components/send-email/send-email-types";
+import {Transport} from "nodemailer";
 
 export interface AppConfig {
     env: AppEnv;
@@ -27,6 +31,7 @@ export interface AppConfig {
     identityComponent: IdentityComponent;
     userCredentialsAggregator: UserCredentialsAggregator;
     authenticateApp: AuthenticateApp;
+    sendEmailComponent: SendEmailComponent;
 }
 
 export default function createConfig({ env }: {env: AppEnv}): AppConfig {
@@ -37,7 +42,9 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
     const userCredentialsAggregator =  createUserCredentialsAggregator({db: knexClient, messageStore});
     const aggregators: Aggregator[] = [homePageAggregator, userCredentialsAggregator];
     const identityComponent = createIdentityComponent({messageStore});
-    const components: Component[] = [identityComponent];
+    const transport = createPickupTransport({directory: env.emailDirectory}) as Transport;
+    const sendEmailComponent = createSendEmailComponent({messageStore, systemSenderEmailAddress: env.systemSenderEmailAddress, transport})
+    const components: Component[] = [identityComponent, sendEmailComponent];
     const homeApp: App = createHome({db: knexClient});
     const recordViewingApp = createRecordViewingsApp({messageStore});
     const registerUsersApp = createUserRegistration({db: knexClient, messageStore});
@@ -54,5 +61,6 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
         identityComponent,
         userCredentialsAggregator,
         authenticateApp,
+        sendEmailComponent
     }
 }

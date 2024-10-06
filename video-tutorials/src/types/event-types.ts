@@ -13,6 +13,10 @@ export interface UserIdEventMetadata extends VideoTutorialEventMetadata {
     userId: string;
 }
 
+export interface OriginStreamEventMetadata extends UserIdEventMetadata {
+    originStreamName: string;
+}
+
 export interface Message {
     globalPosition: number;
     position: number;
