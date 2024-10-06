@@ -1,10 +1,10 @@
-import {IdentityCommandHandlerContext} from "./identity-types";
-import {AlreadyRegisteredError} from "../../app/errors/AlreadyRegisteredError";
+import {IdentityHandlerContext} from "./identity-types";
+import {AlreadyRegisteredError} from "../../errors/AlreadyRegisteredError";
 import {v4 as uuid} from "uuid";
 import {UserIdEventMetadata, VideoTutorialEvent} from "../../types/event-types";
 
-export function writeRegisteredEvent(context: IdentityCommandHandlerContext, err?: AlreadyRegisteredError): Promise<IdentityCommandHandlerContext> {
-    const command = context.command;
+export function writeRegisteredEvent(context: IdentityHandlerContext, err?: AlreadyRegisteredError): Promise<IdentityHandlerContext> {
+    const command = context.message;
     const commandMetadata = command.metadata as UserIdEventMetadata;
     const registeredEvent: VideoTutorialEvent<UserIdEventMetadata> = {
         id: uuid(),

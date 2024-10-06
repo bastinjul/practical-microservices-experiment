@@ -1,6 +1,6 @@
 import {UserRegistrationChainContext} from "./index";
 import validate from "validate.js";
-import {ValidationError} from "../errors/ValidationError";
+import {ValidationError} from "../../errors/ValidationError";
 
 const constraints = {
     email: {

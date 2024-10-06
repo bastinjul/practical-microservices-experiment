@@ -1,5 +1,5 @@
 import {UserRegistrationChainContext} from "./index";
-import {ValidationError} from "../errors/ValidationError";
+import {ValidationError} from "../../errors/ValidationError";
 
 export function ensureThereWasNoExistingIdentity(context: UserRegistrationChainContext): UserRegistrationChainContext {
     if(context.existingIdentity) {

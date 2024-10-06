@@ -1,0 +1,1 @@
+export class AlreadySentRegistrationEmailError extends Error {}

@@ -9,9 +9,9 @@ import {
 } from "./authenticate-types";
 import {Router, Request, Response, NextFunction} from "express";
 import bodyParser from "body-parser";
-import {AuthenticationError} from "../errors/AuthenticationError";
-import {NotFoundError} from "../errors/NotFoundError";
-import {CredentialsMismatchError} from "../errors/CredentialsMismatchError";
+import {AuthenticationError} from "../../errors/AuthenticationError";
+import {NotFoundError} from "../../errors/NotFoundError";
+import {CredentialsMismatchError} from "../../errors/CredentialsMismatchError";
 import Bluebird from "bluebird";
 import {loadUserCredentials} from "./load-user-credentials";
 import {UserCredentials} from "../../types/aggregator-types";

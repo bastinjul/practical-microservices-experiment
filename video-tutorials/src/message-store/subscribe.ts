@@ -1,11 +1,16 @@
 import {v4 as uuid} from 'uuid';
 import Bluebird from 'bluebird';
-import {Message, SubscriptionMessage} from "../types/event-types";
+import {
+    isOriginStreamEventMetadata,
+    Message,
+    SubscriptionMessage
+} from "../types/event-types";
 import {QueryResult} from "pg";
 import {CreateSubscription, CreateSubscriptionConfig, Subscription} from "./message-store-types";
+import {category} from "./category";
 
 export function configureCreateSubscription({read, readLastMessage, write}: CreateSubscription): (subscriptionConfig: CreateSubscriptionConfig) => Subscription {
-    return ({streamName, handlers, messagesPerTick = 100, subscriberId, positionUpdateInterval = 100, tickIntervalMs = 100}: CreateSubscriptionConfig): Subscription => {
+    return ({streamName, handlers, messagesPerTick = 100, subscriberId, positionUpdateInterval = 100, tickIntervalMs = 100, originStreamName = null}: CreateSubscriptionConfig): Subscription => {
         const subscriberStreamName = `subscriberPosition-${subscriberId}`;
         let currentPosition = 0;
         let messageSinceLastPositionWrite = 0;
@@ -40,6 +45,7 @@ export function configureCreateSubscription({read, readLastMessage, write}: Crea
 
         function getNextBatchOfMessages(): Promise<Message[]> {
             return read(streamName, currentPosition + 1, messagesPerTick)
+                .then(filterOnOriginMatch)
         }
 
         async function processBatch(messages: Message[]): Promise<number> {
@@ -94,6 +100,19 @@ export function configureCreateSubscription({read, readLastMessage, write}: Crea
                     console.error(`Error processing batch`, err);
                     stop();
                 });
+        }
+
+        function filterOnOriginMatch(messages: Message[]) {
+            if(!originStreamName) {
+                return messages;
+            }
+            return messages.filter(message => {
+                if(message.metadata && isOriginStreamEventMetadata(message.metadata)) {
+                    const originCategory = category(message.metadata.originStreamName);
+                    return originStreamName == originCategory;
+                }
+                return false;
+            })
         }
 
         return {

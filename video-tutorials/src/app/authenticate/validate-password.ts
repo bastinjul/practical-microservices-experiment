@@ -1,6 +1,6 @@
 import {AuthenticateContext} from "./authenticate-types";
 import bcrypt from "bcrypt";
-import {CredentialsMismatchError} from "../errors/CredentialsMismatchError";
+import {CredentialsMismatchError} from "../../errors/CredentialsMismatchError";
 
 export function validatePassword(context: AuthenticateContext): Promise<AuthenticateContext> {
     return bcrypt

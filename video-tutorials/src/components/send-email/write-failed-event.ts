@@ -1,5 +1,5 @@
 import {SendEmailHandlerContext} from "./send-email-types";
-import {SendError} from "../../app/errors/SendError";
+import {SendError} from "../../errors/SendError";
 import {v4 as uuid} from "uuid";
 import {OriginStreamEventMetadata, VideoTutorialEvent} from "../../types/event-types";
 

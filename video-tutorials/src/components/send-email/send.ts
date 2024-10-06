@@ -1,5 +1,5 @@
 import {createTransport, SentMessageInfo, Transport} from "nodemailer";
-import {SendError} from "../../app/errors/SendError";
+import {SendError} from "../../errors/SendError";
 import {JustSendIt} from "./send-email-types";
 import Mail from "nodemailer/lib/mailer";
 

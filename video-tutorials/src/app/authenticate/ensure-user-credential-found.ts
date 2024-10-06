@@ -1,5 +1,5 @@
 import {AuthenticateContext} from "./authenticate-types";
-import {NotFoundError} from "../errors/NotFoundError";
+import {NotFoundError} from "../../errors/NotFoundError";
 
 export function ensureUserCredentialFound(context: AuthenticateContext): AuthenticateContext {
     if(!context.userCredentials) {

@@ -28,6 +28,7 @@ export interface CreateSubscriptionConfig {
     subscriberId: string;
     positionUpdateInterval: number;
     tickIntervalMs: number;
+    originStreamName: string | null;
 }
 
 export interface Subscription {

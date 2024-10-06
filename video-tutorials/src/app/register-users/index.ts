@@ -1,7 +1,7 @@
 import {AppActions, AppHandlers, AppQueries} from "../../types/common-types";
 import express, {NextFunction, Request, Response, Router} from "express";
 import {v4 as uuid} from "uuid";
-import {ValidationError} from "../errors/ValidationError";
+import {ValidationError} from "../../errors/ValidationError";
 import {validation} from "./validate";
 import {loadExistingIdentity} from "./load-existing-identity";
 import {Knex} from "knex";

@@ -15,8 +15,6 @@ export interface SendEmailData {
     subject: string;
     text: string;
     html: string;
-    from: string;
-    reason: string;
 }
 
 export interface JustSendIt {

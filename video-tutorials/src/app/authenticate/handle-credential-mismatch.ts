@@ -1,7 +1,7 @@
 import {AuthenticateContext} from "./authenticate-types";
 import {VideoTutorialEvent, VideoTutorialEventMetadata} from "../../types/event-types";
 import {v4 as uuid} from "uuid";
-import {AuthenticationError} from "../errors/AuthenticationError";
+import {AuthenticationError} from "../../errors/AuthenticationError";
 
 export function handleCredentialMismatch(context: AuthenticateContext) {
     const event: VideoTutorialEvent<VideoTutorialEventMetadata> = {
