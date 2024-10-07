@@ -18,6 +18,8 @@ import {createSendEmailComponent} from "../components/send-email";
 import createPickupTransport from "nodemailer-pickup-transport";
 import {SendEmailComponent} from "../components/send-email/send-email-types";
 import {Transport} from "nodemailer";
+import {CreatorsPortalApp} from "../app/creators-portal/creators-portal-types";
+import {createCreatorsPortalApp} from "../app/creators-portal";
 
 export interface AppConfig {
     env: AppEnv;
@@ -32,6 +34,7 @@ export interface AppConfig {
     userCredentialsAggregator: UserCredentialsAggregator;
     authenticateApp: AuthenticateApp;
     sendEmailComponent: SendEmailComponent;
+    creatorsPortalApp: CreatorsPortalApp;
 }
 
 export default function createConfig({ env }: {env: AppEnv}): AppConfig {
@@ -49,6 +52,7 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
     const recordViewingApp = createRecordViewingsApp({messageStore});
     const registerUsersApp = createUserRegistration({db: knexClient, messageStore});
     const authenticateApp = createAuthenticateApp({db: knexClient, messageStore});
+    const creatorsPortalApp = createCreatorsPortalApp({db: knexClient, messageStore});
     return {
         env,
         db: knexClient,
@@ -61,6 +65,7 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
         identityComponent,
         userCredentialsAggregator,
         authenticateApp,
-        sendEmailComponent
+        sendEmailComponent,
+        creatorsPortalApp
     }
 }

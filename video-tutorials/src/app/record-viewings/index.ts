@@ -42,7 +42,7 @@ function createActions({messageStore}: {messageStore: MessageStore}): RecordView
 function createHandlers({actions}: {actions: RecordViewingsActions}): RecordViewingHandlers {
     function handleRecordViewing(req: Request, res: Response): any {
         return actions
-            .recordViewing(res.locals.context.traceId as string, parseInt(req.params['videoId']), "") //TODO add user id
+            .recordViewing(res.locals.context.traceId as string, parseInt(req.params['videoId']), res.locals.context.userId)
             .then(() => res.redirect('/'));
     }
     return {
@@ -50,7 +50,7 @@ function createHandlers({actions}: {actions: RecordViewingsActions}): RecordView
     } as RecordViewingHandlers;
 }
 
-export function createRecordViewingsApp({messageStore}: {messageStore: any}): App {
+export function createRecordViewingsApp({messageStore}: {messageStore: MessageStore}): App {
     const actions = createActions({messageStore});
     const handlers = createHandlers({actions});
     const router = express.Router();

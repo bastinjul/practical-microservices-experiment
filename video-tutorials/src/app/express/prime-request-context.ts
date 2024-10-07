@@ -3,7 +3,8 @@ import {Request, Response, NextFunction} from "express";
 
 export default function primeRequestContext(req: Request, res: Response, next: NextFunction): void {
     res.locals.context = {
-        traceId: uuidv4()
+        traceId: uuidv4(),
+        userId: req.session ? req.session.userId : null,
     }
     next();
 }

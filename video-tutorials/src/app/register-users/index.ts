@@ -64,7 +64,7 @@ function createHandlers({actions}: {actions: RegisterUsersActions}): RegisterUse
             password: req.body.password
         } as UserRegistrationAttributes;
         return actions
-            .registerUser(res.locals.traceId, attributes)
+            .registerUser(res.locals.context.traceId, attributes)
             .then(() => res.redirect(301, 'register/registration-complete'))
             .catch((err: ValidationError) =>
                 res

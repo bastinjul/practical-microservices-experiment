@@ -70,7 +70,7 @@ function createHandlers({actions}: {actions: AuthenticateActions}): Authenticate
     }
     function handleAuthenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
         const {email, password} = req.body;
-        const traceId = res.locals.traceId;
+        const traceId = res.locals.context.traceId;
         return actions
             .authenticate(traceId, email, password)
             .then(context => {
