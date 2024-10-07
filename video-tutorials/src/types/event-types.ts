@@ -10,7 +10,7 @@ export interface VideoTutorialEventMetadata {
 }
 
 export function isEventMetadata(obj: any): obj is VideoTutorialEventMetadata {
-    return typeof obj.traceId === 'string';
+    return obj && (typeof obj.traceId === 'undefined' || typeof obj.traceId === 'string');
 }
 
 export interface UserIdEventMetadata extends VideoTutorialEventMetadata {

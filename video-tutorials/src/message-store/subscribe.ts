@@ -109,7 +109,7 @@ export function configureCreateSubscription({read, readLastMessage, write}: Crea
             return messages.filter(message => {
                 if(message.metadata && isOriginStreamEventMetadata(message.metadata)) {
                     const originCategory = category(message.metadata.originStreamName);
-                    return originStreamName == originCategory;
+                    return originStreamName === originCategory;
                 }
                 return false;
             })
