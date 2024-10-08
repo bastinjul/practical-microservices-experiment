@@ -6,7 +6,6 @@ import {MessageStore, CreateSubscriptionConfig, Subscription} from "../message-s
 
 export interface HomePageAggregator extends Aggregator {
     queries: HomePageAggregatorQueries;
-    handlers: AggregatorHandler;
 }
 
 export interface HomePageAggregatorQueries extends AppQueries {

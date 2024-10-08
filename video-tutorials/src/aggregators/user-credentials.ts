@@ -6,7 +6,6 @@ import {Message} from "../types/event-types";
 
 export interface UserCredentialsAggregator extends Aggregator {
     queries: UserCredentialsAggregatorQueries;
-    handlers: AggregatorHandler;
 }
 
 export interface UserCredentialsAggregatorQueries extends AppQueries {

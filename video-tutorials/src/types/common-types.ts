@@ -1,4 +1,5 @@
 import {Router} from "express";
+import {AggregatorHandler} from "./aggregator-types";
 
 export interface AppHandlers {
 }
@@ -22,7 +23,7 @@ export interface StartupI {
 
 export interface Aggregator extends StartupI {
     queries: AppQueries;
-    handlers: AppHandlers;
+    handlers: AggregatorHandler;
     init?: () => Promise<any>;
 }
 

@@ -1,0 +1,1 @@
+export class AlreadyPublishedError extends Error {}

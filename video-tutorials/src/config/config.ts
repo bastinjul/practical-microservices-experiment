@@ -20,6 +20,9 @@ import {SendEmailComponent} from "../components/send-email/send-email-types";
 import {Transport} from "nodemailer";
 import {CreatorsPortalApp} from "../app/creators-portal/creators-portal-types";
 import {createCreatorsPortalApp} from "../app/creators-portal";
+import {createCreatorsVideosAggregator, CreatorsVideosAggregator} from "../aggregators/creators-videos";
+import {createVideoPublishingComponent} from "../components/video-publishing";
+import {VideoPublishingComponent} from "../components/video-publishing/types";
 
 export interface AppConfig {
     env: AppEnv;
@@ -32,8 +35,10 @@ export interface AppConfig {
     registerUsersApp: RegisterUserApp;
     identityComponent: IdentityComponent;
     userCredentialsAggregator: UserCredentialsAggregator;
+    creatorsVideoAggregator: CreatorsVideosAggregator;
     authenticateApp: AuthenticateApp;
     sendEmailComponent: SendEmailComponent;
+    videoPublishingComponent: VideoPublishingComponent;
     creatorsPortalApp: CreatorsPortalApp;
 }
 
@@ -43,11 +48,13 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
     const messageStore: MessageStore = createMessageStore({db: postgresClient});
     const homePageAggregator = createHomePageAggregator({db: knexClient, messageStore});
     const userCredentialsAggregator =  createUserCredentialsAggregator({db: knexClient, messageStore});
-    const aggregators: Aggregator[] = [homePageAggregator, userCredentialsAggregator];
+    const creatorsVideoAggregator = createCreatorsVideosAggregator({db: knexClient, messageStore});
+    const aggregators: Aggregator[] = [homePageAggregator, userCredentialsAggregator, creatorsVideoAggregator];
     const identityComponent = createIdentityComponent({messageStore});
     const transport = createPickupTransport({directory: env.emailDirectory}) as Transport;
     const sendEmailComponent = createSendEmailComponent({messageStore, systemSenderEmailAddress: env.systemSenderEmailAddress, transport})
-    const components: Component[] = [identityComponent, sendEmailComponent];
+    const videoPublishingComponent = createVideoPublishingComponent({messageStore});
+    const components: Component[] = [identityComponent, sendEmailComponent, videoPublishingComponent];
     const homeApp: App = createHome({db: knexClient});
     const recordViewingApp = createRecordViewingsApp({messageStore});
     const registerUsersApp = createUserRegistration({db: knexClient, messageStore});
@@ -63,7 +70,9 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
         components,
         registerUsersApp,
         identityComponent,
+        videoPublishingComponent,
         userCredentialsAggregator,
+        creatorsVideoAggregator,
         authenticateApp,
         sendEmailComponent,
         creatorsPortalApp
