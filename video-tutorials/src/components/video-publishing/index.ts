@@ -9,6 +9,12 @@ import {ensureVideoPublishingNotAttempted} from "./ensure-video-publishing-not-a
 import {transcodeVideo} from "./transcode-video";
 import {writeVideoPublishedEvent} from "./write-video-published-event";
 import {writeVideoPublishedFailedEvent} from "./write-video-published-failed-event";
+import {ValidationError} from "../../errors/ValidationError";
+import {CommandAlreadyProcessedError} from "../../errors/CommandAlreadyProcessedError";
+import {ensureCommandHasNotBeenProcessed} from "./ensure-command-has-not-been-processed";
+import {ensureNameIsValid} from "./ensure-name-is-valid";
+import {writeVideoNamedEvent} from "./write-video-named-event";
+import {writeVideoNameRejectedEvent} from "./write-video-name-rejected-event";
 
 function createHandlers({messageStore}: {messageStore: MessageStore}): AggregatorHandler {
     return {
@@ -24,6 +30,19 @@ function createHandlers({messageStore}: {messageStore: MessageStore}): Aggregato
                 .then(writeVideoPublishedEvent)
                 .catch(AlreadyPublishedError, () => {})
                 .catch((err: Error) => writeVideoPublishedFailedEvent(err, context));
+        },
+        NameVideo: (message: Message) => {
+            const context: VideoPublishingComponentContext = {
+                messageStore,
+                command: message
+            } as VideoPublishingComponentContext;
+            return Bluebird.resolve(context)
+                .then(loadVideo)
+                .then(ensureCommandHasNotBeenProcessed)
+                .then(ensureNameIsValid)
+                .then(writeVideoNamedEvent)
+                .catch(CommandAlreadyProcessedError, () => {})
+                .catch(ValidationError, err => writeVideoNameRejectedEvent(context, err.message))
         }
     }
 }

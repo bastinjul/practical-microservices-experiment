@@ -20,4 +20,6 @@ export interface VideoPublishing {
     sourceUri: string | null;
     transcodedUri: string | null;
     ownerId: string | null | undefined;
+    name: string;
+    sequence: number;
 }

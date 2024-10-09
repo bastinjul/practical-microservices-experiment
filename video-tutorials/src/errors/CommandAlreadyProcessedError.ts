@@ -1,0 +1,1 @@
+export class CommandAlreadyProcessedError extends Error {}

@@ -3,7 +3,7 @@ import {
     CreatorsPortalActions,
     CreatorsPortalApp,
     CreatorsPortalHandlers,
-    CreatorsPortalQueries, CreatorsPortalView
+    CreatorsPortalQueries, CreatorsPortalView, VideoOperationView
 } from "./creators-portal-types";
 import {Knex} from "knex";
 import {NextFunction, Router, Request, Response} from "express";
@@ -30,8 +30,27 @@ function createActions({messageStore}: {messageStore: MessageStore}): CreatorsPo
         }
         return messageStore.write(streamName, command);
     }
+
+    function nameVideo({traceId, userId, name, videoId}: {traceId: string, userId: string, name: string, videoId: string}): Promise<any> {
+        const streamName = `videoPublishing:command-${videoId}`;
+        const command : VideoTutorialEvent<UserIdEventMetadata> = {
+            id: uuid(),
+            type: 'NameVideo',
+            metadata: {
+                traceId,
+                userId
+            },
+            data: {
+                name,
+                videoId
+            }
+        }
+        return messageStore.write(streamName, command);
+    }
+
     return {
-        publishVideo
+        publishVideo,
+        nameVideo
     }
 }
 
@@ -55,9 +74,20 @@ function createQueries({db}: {db: Promise<Knex>}): CreatorsPortalQueries {
                 .where({owner_id: ownerId}))
             .then(camelCaseKeys);
     }
+
+    function videoOperationByTraceId(traceId: string): Promise<VideoOperationView> {
+        return db.then(client =>
+            client('video_operations')
+                .where({trace_id: traceId})
+                .limit(1))
+            .then(camelCaseKeys)
+            .then(rows => rows[0] as VideoOperationView);
+    }
+
     return {
         videoByIdAndOwnerId,
-        videosByOwnerId
+        videosByOwnerId,
+        videoOperationByTraceId
     };
 }
 
@@ -98,10 +128,36 @@ function createHandlers({actions, queries}: {actions: CreatorsPortalActions, que
             });
     }
 
+    function handleNameVideo(req: Request, res: Response, next: NextFunction): void {
+        const videoId = req.params.id;
+        const name = req.body.name;
+        actions
+            .nameVideo({userId: res.locals.context.userId, traceId: res.locals.context.traceId, name, videoId})
+            .then(() =>
+                res.redirect(`/creators-portal/video-operations/${res.locals.context.traceId}`)
+            )
+            .catch(next);
+    }
+
+    function handleShowVideoOperation(req: Request, res: Response, next: NextFunction): Promise<any> {
+        return queries.videoOperationByTraceId(req.params.traceId)
+            .then(operation => {
+                if(!operation || !operation.succeeded) {
+                    return res.render(
+                        'creators-portal/templates/video-operation',
+                        {operation}
+                    )
+                }
+                return res.redirect(`/creators-portal/videos/${operation.videoId}`);
+            });
+    }
+
     return {
         handlePublishVideo,
         handleDashboard,
-        handleShowVideo
+        handleShowVideo,
+        handleNameVideo,
+        handleShowVideoOperation
     }
 }
 
@@ -110,9 +166,17 @@ export function createCreatorsPortalApp({db, messageStore}: {db: Promise<Knex>, 
     const actions = createActions({messageStore});
     const handlers = createHandlers({actions, queries});
     const router = Router();
-    router.route('/publish-video').post(bodyParser.json(), handlers.handlePublishVideo)
-    router.route('/videos/:id').get(handlers.handleShowVideo)
-    router.route('/').get(handlers.handleDashboard)
+    router
+        .route('/videos/:id/name')
+        .post(bodyParser.urlencoded({ extended: false }), handlers.handleNameVideo);
+    router
+        .route('/video-operations/:traceId')
+        .get(handlers.handleShowVideoOperation);
+    router
+        .route('/publish-video')
+        .post(bodyParser.json(), handlers.handlePublishVideo);
+    router.route('/videos/:id').get(handlers.handleShowVideo);
+    router.route('/').get(handlers.handleDashboard);
     return {
         handlers,
         router

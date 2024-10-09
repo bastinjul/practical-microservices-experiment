@@ -8,7 +8,9 @@ const videoPublishingProjection: Projection<VideoPublishing> = {
             id: null,
             publishedAttempted: false,
             sourceUri: null,
-             transcodedUri: null
+            transcodedUri: null,
+            sequence: 0,
+            name: '',
         } as VideoPublishing;
     },
     VideoPublished(video: VideoPublishing, published: Message): VideoPublishing {
@@ -24,6 +26,15 @@ const videoPublishingProjection: Projection<VideoPublishing> = {
         video.publishedAttempted = true;
         video.ownerId = failed.data.ownerId;
         video.sourceUri = failed.data.sourceUri;
+        return video;
+    },
+    VideoNamed (video: VideoPublishing, named: Message): VideoPublishing {
+        video.id = named.data.videoId;
+        video.sequence = named.globalPosition;
+        return video;
+    },
+    VideoNameRejected (video: VideoPublishing, rejected: Message): VideoPublishing {
+        video.sequence = rejected.globalPosition;
         return video;
     }
 }

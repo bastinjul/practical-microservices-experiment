@@ -34,7 +34,6 @@ function createQueries({db}: {db: Promise<Knex>}): HomeQueries {
                 .then((rows: Page[]) => rows[0])
                 .then((page: Page) => page.pageData)
         ).then(res => {
-            console.log(res);
             return res;
         });
     }

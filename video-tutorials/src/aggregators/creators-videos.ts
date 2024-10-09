@@ -10,6 +10,11 @@ export interface CreatorsVideosAggregator extends Aggregator {
 
 export interface CreatorsVideosAggregatorQueries extends AppQueries {
     createVideo: (ownerId: string, sourceUri: string, videoId: string, position: number, transcodeUri: string) => Promise<any>;
+    updateVideoName: (id: string, position: number, name: string) => Promise<any>;
+}
+
+function streamToEntityId (streamName: string): string {
+    return streamName.split(/-(.+)/)[1]
 }
 
 function createQueries({db}: {db: Promise<Knex>}): CreatorsVideosAggregatorQueries {
@@ -23,14 +28,24 @@ function createQueries({db}: {db: Promise<Knex>}): CreatorsVideosAggregatorQueri
         `
         return db.then(client => client.raw(rawQuery, {videoId, ownerId, sourceUri, position, transcodedUri}));
     }
+
+    function updateVideoName(id: string, position: number, name: string): Promise<any> {
+        return db.then(client =>
+            client('creators_portal_videos')
+                .update({name, position})
+                .where({id})
+                .where('position', '<', position));
+    }
     return {
-        createVideo
+        createVideo,
+        updateVideoName
     }
 }
 
 function createHandlers({queries}: {queries: CreatorsVideosAggregatorQueries}): AggregatorHandler {
     return {
-        VideoPublished: (event: Message) => queries.createVideo(event.data.ownerId, event.data.sourceUri, event.data.videoId, event.position, event.data.transcodedUri)
+        VideoPublished: (event: Message) => queries.createVideo(event.data.ownerId, event.data.sourceUri, event.data.videoId, event.position, event.data.transcodedUri),
+        VideoNamed: (event: Message) => queries.updateVideoName(streamToEntityId(event.streamName), event.position, event.data.name)
     }
 }
 

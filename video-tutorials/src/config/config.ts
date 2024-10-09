@@ -23,6 +23,7 @@ import {createCreatorsPortalApp} from "../app/creators-portal";
 import {createCreatorsVideosAggregator, CreatorsVideosAggregator} from "../aggregators/creators-videos";
 import {createVideoPublishingComponent} from "../components/video-publishing";
 import {VideoPublishingComponent} from "../components/video-publishing/types";
+import {createVideoOperationsAggregator, VideoOperationsAggregator} from "../aggregators/video-operations";
 
 export interface AppConfig {
     env: AppEnv;
@@ -36,6 +37,7 @@ export interface AppConfig {
     identityComponent: IdentityComponent;
     userCredentialsAggregator: UserCredentialsAggregator;
     creatorsVideoAggregator: CreatorsVideosAggregator;
+    videoOperationsAggregator: VideoOperationsAggregator;
     authenticateApp: AuthenticateApp;
     sendEmailComponent: SendEmailComponent;
     videoPublishingComponent: VideoPublishingComponent;
@@ -49,7 +51,8 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
     const homePageAggregator = createHomePageAggregator({db: knexClient, messageStore});
     const userCredentialsAggregator =  createUserCredentialsAggregator({db: knexClient, messageStore});
     const creatorsVideoAggregator = createCreatorsVideosAggregator({db: knexClient, messageStore});
-    const aggregators: Aggregator[] = [homePageAggregator, userCredentialsAggregator, creatorsVideoAggregator];
+    const videoOperationsAggregator =  createVideoOperationsAggregator({db: knexClient, messageStore});
+    const aggregators: Aggregator[] = [homePageAggregator, userCredentialsAggregator, creatorsVideoAggregator, videoOperationsAggregator];
     const identityComponent = createIdentityComponent({messageStore});
     const transport = createPickupTransport({directory: env.emailDirectory}) as Transport;
     const sendEmailComponent = createSendEmailComponent({messageStore, systemSenderEmailAddress: env.systemSenderEmailAddress, transport})
@@ -73,6 +76,7 @@ export default function createConfig({ env }: {env: AppEnv}): AppConfig {
         videoPublishingComponent,
         userCredentialsAggregator,
         creatorsVideoAggregator,
+        videoOperationsAggregator,
         authenticateApp,
         sendEmailComponent,
         creatorsPortalApp
